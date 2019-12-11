@@ -17,8 +17,6 @@ TOR_UID="debian-tor"
 TOR_PORT="9040"
 
 function start {
-	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
-
 	if [ ! -e /tmp/tor.pid ]; then
 		echo -e " $RED*$BLUE Tor is not running! $GREEN starting it $BLUE for you" >&2
 		echo -e -n "\n $GREEN*$BLUE Stopping service nscd"
@@ -84,27 +82,10 @@ function start {
 	echo -e " $GREEN*$BLUE Allowing only tor to browse in clearnet\n"
 	/usr/sbin/iptables -A OUTPUT -m owner --uid-owner $TOR_UID -j ACCEPT
 	/usr/sbin/iptables -A OUTPUT -j REJECT
-
-	echo -e "$GREEN *$BLUE All traffic was redirected throught Tor\n"
-	echo -e "$GREEN[$BLUE i$GREEN ]$BLUE You are under AnonSurf tunnel$RESETCOLOR\n"
-	notify "Global Anonymous Proxy Activated"
-	sleep 1
-	notify "Dance like no one's watching. Encrypt like everyone is :)"
-	sleep 10
 }
 
 
 function stop {
-	# Make sure only root can run our script
-	ME=$(whoami | tr [:lower:] [:upper:])
-
-	if [ $(id -u) -ne 0 ]; then
-		echo -e "\n$GREEN[$RED!$GREEN] $RED $ME R U DRUNK?? This script must be run as root$RESETCOLOR\n" >&2
-		exit 1
-	fi
-
-	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
-
 	/usr/sbin/iptables -F
 	/usr/sbin/iptables -t nat -F
 	echo -e "\n $GREEN*$BLUE Deleted all iptables rules"
@@ -133,9 +114,6 @@ function stop {
 	echo -e " $GREEN*$BLUE It is safe to not worry for dnsmasq and nscd start errors if they are not installed or started already."
 	sleep 1
 
-	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
-	notify "Global Anonymous Proxy Closed - Stop dancing :("
-	sleep 4
 }
 
 
