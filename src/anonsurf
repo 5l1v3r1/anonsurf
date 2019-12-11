@@ -81,6 +81,7 @@ function start {
 
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
 
+	# TODO start service instead of process
 	anondaemon start
 
 	echo -e "$GREEN *$BLUE All traffic was redirected throught Tor\n"
@@ -103,6 +104,7 @@ function stop {
 
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
 
+	# TODO stop service instead of process
 	anondaemon stop
 
 	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
