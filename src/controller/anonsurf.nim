@@ -18,6 +18,7 @@ proc start() =
   # generate iptables routing rules and apply it TODO
 
 proc stop() =
+  # TODO use anondaemon instead
   # remove current iptable rules
   # restore ip table old rules
 
@@ -32,6 +33,7 @@ proc stop() =
   
 
   # Restore resolvconf, dnsmasq, nscd services
+  
   discard execShellCmd("/usr/sbin/service resolvconf start || service resolvconf restart")
   discard execShellCmd("/usr/sbin/service dnsmasq start")
   discard execShellCmd("/usr/sbin/service nscd start")
