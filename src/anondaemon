@@ -122,28 +122,18 @@ function stop {
 
 
 case "$1" in
-	# We added the if statements here just in case users run the file accidently
 	start)
-		# Start if the daemon is not running only
-		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
-			disableService
-			start
-		fi
+		disableService
+		start
 	;;
 	stop)
-		# Stop if the daemon is running only
-		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
-			stop
-			enableService
-		fi
+		stop
+		enableService
 	;;
 	restart)
-		# Restart if the daemon is running onnly
-		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
-			$0 stop
-			sleep 1
-			$0 start
-		fi
+		$0 stop
+		sleep 1
+		$0 start
 	;;
 	*)
 	esac
