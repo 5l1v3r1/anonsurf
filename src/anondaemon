@@ -122,20 +122,27 @@ function stop {
 
 
 case "$1" in
+	# We added the if statements here just in case users run the file accidently
 	start)
-		# TODO start if the daemon is not running only
-		disableService
-		start
+		# Start if the daemon is not running only
+		if [ "$(systemctl is-active tor)" = "inactive" ]; then
+			disableService
+			start
+		fi
 	;;
 	stop)
-		# TODO stop if the daemon is running only
-		stop
-		enableService
+		# Stop if the daemon is running only
+		if [ "$(systemctl is-active tor)" = "active" ]; then
+			stop
+			enableService
+		fi
 	;;
 	restart)
-		# TODO restart if the daemon is running onnly
-		$0 stop
-		sleep 1
-		$0 start
+		# Restart if the daemon is running onnly
+		if [ "$(systemctl is-active tor)" = "active" ]; then
+			$0 stop
+			sleep 1
+			$0 start
+		fi
 	;;
    *)
