@@ -145,4 +145,5 @@ case "$1" in
 			$0 start
 		fi
 	;;
-   *)
+	*)
+	esac
