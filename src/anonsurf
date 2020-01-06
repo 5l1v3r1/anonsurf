@@ -197,10 +197,11 @@ case "$1" in
 	;;
    *)
 echo -e "
-Parrot AnonSurf Module (v 2.10)
+Parrot AnonSurf Module (v 2.11)
 	Developed by Lorenzo \"Palinuro\" Faletra <palinuro@parrotsec.org>
 		     Lisetta \"Sheireen\" Ferrero <sheireen@parrotsec.org>
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
+				 Nong \"Dm Knght\" Hoang Tu <dmknght@parrotsec.org>
 		and a huge amount of Caffeine + some GNU/GPL v3 stuff
 	Extended by Daniel \"Sawyer\" Garcia <dagaba13@gmail.com>
 
