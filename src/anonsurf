@@ -75,7 +75,7 @@ function start {
 	# Make sure only root can run this script
 	ME=$(whoami | tr [:lower:] [:upper:])
 	if [ $(id -u) -ne 0 ]; then
-		echo -e -e "\n$GREEN[$RED!$GREEN] $RED $ME R U DRUNK?? This script must be run as root$RESETCOLOR\n" >&2
+		echo -e "\n$GREEN[$RED!$GREEN] $RED $ME R U DRUNK?? This script must be run as root$RESETCOLOR\n" >&2
 		exit 1
 	fi
 
@@ -166,6 +166,8 @@ case "$1" in
 		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			start
+		else
+			echo -e "\n$GREEN[$RED!$GREEN] $RED Anonsurf is running! Can't start service!$RESETCOLOR\n" >&2
 		fi
 	;;
 	stop)
@@ -173,6 +175,8 @@ case "$1" in
 		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			stop
+		else
+			echo -e "\n$GREEN[$RED!$GREEN] $RED Anonsurf is not running! Can't stop service!$RESETCOLOR\n" >&2
 		fi
 	;;
 	changeid|change-id|change)
@@ -193,6 +197,8 @@ case "$1" in
 			$0 stop
 			sleep 1
 			$0 start
+		else
+			echo -e "\n$GREEN[$RED!$GREEN] $RED Anonsurf is not running! Can't restart service!$RESETCOLOR\n" >&2
 		fi
 	;;
    *)
