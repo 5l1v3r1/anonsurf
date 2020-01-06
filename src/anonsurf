@@ -123,8 +123,7 @@ function change {
 
 
 function status {
-	/usr/sbin/service tor@default status
-	cat /tmp/anonsurf-tor.log || cat /var/log/tor/log
+	nyx
 }
 
 function dnsstart {
@@ -163,12 +162,18 @@ function dns {
 
 case "$1" in
 	start)
-		zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
-		start
+	# Only start if anondaemon is not running
+		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
+			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
+			start
+		fi
 	;;
 	stop)
-		zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
-		stop
+	# Only stop if the anondaemon is running
+		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
+			stop
+		fi
 	;;
 	changeid|change-id|change)
 		change
@@ -183,9 +188,12 @@ case "$1" in
 	    dns
 	;;
 	restart)
-		$0 stop
-		sleep 1
-		$0 start
+		# Restart if the daemon is running onnly
+		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+			$0 stop
+			sleep 1
+			$0 start
+		fi
 	;;
    *)
 echo -e "
