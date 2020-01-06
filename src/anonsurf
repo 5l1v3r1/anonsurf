@@ -70,15 +70,16 @@ function ip {
 	notify "My IP is:\n\n$MYIP"
 }
 
-
-function start {
+function checkuid {
 	# Make sure only root can run this script
 	ME=$(whoami | tr [:lower:] [:upper:])
 	if [ $(id -u) -ne 0 ]; then
 		echo -e "\n$GREEN[$RED!$GREEN] $RED $ME R U DRUNK?? This script must be run as root$RESETCOLOR\n" >&2
 		exit 1
 	fi
+}
 
+function start {
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
 
 	service anondaemon start
@@ -93,14 +94,6 @@ function start {
 
 
 function stop {
-	# Make sure only root can run our script
-	ME=$(whoami | tr [:lower:] [:upper:])
-
-	if [ $(id -u) -ne 0 ]; then
-		echo -e "\n$GREEN[$RED!$GREEN] $RED $ME R U DRUNK?? This script must be run as root$RESETCOLOR\n" >&2
-		exit 1
-	fi
-
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
 
 	service anondaemon stop
@@ -161,6 +154,7 @@ function dns {
 case "$1" in
 	start)
 	# Only start if anondaemon is not running
+		checkuid
 		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			start
@@ -170,6 +164,7 @@ case "$1" in
 	;;
 	stop)
 	# Only stop if the anondaemon is running
+		checkuid
 		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			stop
@@ -191,6 +186,7 @@ case "$1" in
 	;;
 	restart)
 		# Restart if the daemon is running onnly
+		checkuid
 		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
 			$0 stop
 			sleep 1
