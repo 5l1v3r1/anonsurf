@@ -4,9 +4,9 @@ Before=poweroff.target reboot.target
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/anondaemon start
-ExecReload=/usr/bin/anondaemon restart
-ExecStop=/usr/bin/anondaemon stop
+ExecStart=/etc/anonsurf/anondaemon start
+ExecReload=/etc/anonsurf/anondaemon restart
+ExecStop=/etc/anonsurf/anondaemon stop
 RemainAfterExit=yes
 
 [Install]
