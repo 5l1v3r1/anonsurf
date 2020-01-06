@@ -89,7 +89,7 @@ function start {
 	notify "Global Anonymous Proxy Activated"
 	sleep 1
 	notify "Dance like no one's watching. Encrypt like everyone is :)"
-	sleep 10
+	sleep 3
 }
 
 
@@ -100,7 +100,7 @@ function stop {
 
 	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
 	notify "Global Anonymous Proxy Closed - Stop dancing :("
-	sleep 4
+	sleep 3
 }
 
 
@@ -154,6 +154,7 @@ function dns {
 case "$1" in
 	start)
 	# Only start if anondaemon is not running
+	# TODO try to run if the service status is failed?
 		checkuid
 		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
@@ -176,7 +177,11 @@ case "$1" in
 		change
 	;;
 	status)
-		status
+		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+			status
+		else
+			echo -e "\n$GREEN[$RED!$GREEN] $RED Anonsurf is not running!$RESETCOLOR\n"
+		fi
 	;;
 	myip|ip)
 		ip
