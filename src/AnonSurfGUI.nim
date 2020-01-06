@@ -22,10 +22,11 @@ proc areaStatus(boxMain: Box) =
 proc areaDNS(boxMain: Box) =
   let
     dnsLock = "/etc/anonsurf/opennic.lock"
-    boxDNS = newBox(Orientation.vertical, 3)
+    boxDNS = newBox(Orientation.horizontal, 3)
     labelDNS = newLabel("OpenNIC Service")
     btnDNS = newButton()
   
+  # TODO when anonsurf is enabled, the lock file will be there but only 127.0.0.1
   if existsFile(dnsLock):
     # OpenNic is already set. Disable it
     btnDNS.label = "Disable OpenNIC DNS"
@@ -43,6 +44,21 @@ proc areaDNS(boxMain: Box) =
   boxMain.packStart(boxDNS, false, true, 3)
 
 
+proc areaAnonsurf(boxMain: Box) =
+  let
+    boxAnonsurf = newBox(Orientation.horizontal, 3)
+    btnRunAnon = newButton("Start Anonurf")
+    btnStatus = newButton("Check Status")
+    btnChangeID = newButton("Change ID")
+  
+  # TODO useable / unusable btn changeid based on anonsurf status
+
+  boxAnonsurf.packstart(btnRunAnon, false, true, 3)
+  boxAnonsurf.packstart(btnStatus, false, true, 3)
+  boxAnonsurf.packstart(btnChangeID, false, true, 3)
+  boxMain.packStart(boxAnonsurf, false, true, 3)
+
+
 proc stop(w: Window) =
   mainQuit()
 
@@ -52,9 +68,10 @@ proc main =
     mainBoard = newWindow()
     boxMain = newBox(Orientation.vertical, 5)
   
-  mainBoard.title = "AnonSurf"
+  mainBoard.title = "AnonSurf GUI"
 
-  areaStatus(boxMain)
+  # areaStatus(boxMain)
+  areaAnonsurf(boxMain)
   areaDNS(boxMain)
 
   mainBoard.add(boxMain)

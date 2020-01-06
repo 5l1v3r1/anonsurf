@@ -13,13 +13,6 @@ TOR_PORT="9040"
 
 ]#
 
-proc safeClean*() =
-  # TODO add yes no box
-  # Kill processes
-  discard execShellCmd("killall -q chrome dropbox iceweasel skype icedove thunderbird firefox firefox-esr chromium xchat hexchat transmission steam firejail")
-  # Clear cache
-  discard execShellCmd("bleachbit -c adobe_reader.cache chromium.cache chromium.current_session chromium.history elinks.history emesene.cache epiphany.cache firefox.url_history flash.cache flash.cookies google_chrome.cache google_chrome.history  links2.history opera.cache opera.search_history opera.url_history &> /dev/null")
-
 proc getCurrentIP*(): string =
   # flag -d:ssl
   let getIP = newHttpClient()
