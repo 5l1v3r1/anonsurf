@@ -1,12 +1,13 @@
 import os
+import gintro / gtk
 
-proc start() =
+proc anonsurfStart*(b: Button) =
   discard execShellCmd("gksu service anondaemon start")
 
-proc stop() =
+proc anonsurfStop*(b: Button) =
   discard execShellCmd("gksu service anondaemon stop")
 
-proc restart() =
+proc anonsurfRestart*(b: Button) =
   discard execShellCmd("gksu service anondaemon restart")
 
 proc change*() =
