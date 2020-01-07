@@ -11,27 +11,22 @@ type
     btnChange: Button
 
 proc refreshStatus(args: Obj): bool =
-  # TODO work with changeid button
   # TODO work with update ip label
   # TODO check DNS buttons
   let output = execProcess("systemctl is-active anondaemon").replace("\n", "")
   if output == "active":
     # Settings for button anonsurf
     args.btnRun.label = "Disable"
-    args.btnRun.connect("clicked", anonsurf.anonsurfStop)
 
     args.btnStatus.label = "Check Status"
     args.btnStatus.setFocusOnClick(true)
-    args.btnStatus.connect("clicked", anonsurf.status)
 
     args.btnChange.label = "Change Tor Node"
-    args.btnChange.connect("clicked", anonsurf.change)
 
   else:
     args.btnRun.label = "Enable"
-    args.btnRun.connect("clicked", anonsurf.anonsurfStart)
 
-    args.btnStatus.label = "Anonsurf Off"
+    args.btnStatus.label = "AnonSurf Off"
     args.btnStatus.setFocusOnClick(false)
 
     args.btnChange.label = "Not connected"
@@ -52,7 +47,6 @@ proc areaDNS(boxMain: Box) =
     btnDNS.setTooltipText("You are using OpenNIC DNS service")
     btnDNS.connect("clicked", dns.setDNS)
   else:
-    # TODO auto update status and check with tor
     # OpenNic is not set. Enable it
     btnDNS.label = "Enable OpenNIC DNS"
     btnDNS.setTooltipText("You are not using OpenNIC DNS service")
@@ -81,16 +75,22 @@ proc areaAnonsurf(boxMain: Box) =
     labelRun = newLabel("Service") # TODO shorter name
     labelStatus = newLabel("Status")
     labelChange = newLabel("Change Node")
-    labelAnonsurf = newLabel("Anonsurf")
-    btnRunAnon = newButton("Start Anonurf")
+    labelAnonsurf = newLabel("AnonSurf")
+    btnRunAnon = newButton("Start AnonSurf")
     btnCheckStatus = newButton("Check Status")
     btnChangeID = newButton("Change ID")
   
+  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID)
+  discard timeoutAdd(5, refreshStatus, args)
 
   labelAnonsurf.setXalign(0.0)
   labelRun.setXalign(0.0)
   labelStatus.setXalign(0.0)
   labelChange.setXalign(0.0)
+
+  btnRunAnon.connect("clicked", anonsurf.anonsurfControl)
+  btnCheckStatus.connect("clicked", anonsurf.status)
+  btnChangeID.connect("clicked", anonsurf.change)
 
   
   boxRun.packStart(labelRun, false, true, 3)
@@ -108,9 +108,6 @@ proc areaAnonsurf(boxMain: Box) =
   boxMain.packStart(labelAnonsurf, false, true, 1)
   boxMain.packStart(boxAnonsurf, false, true, 3)
 
-  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID)
-  discard timeoutAdd(5, refreshStatus, args)
-
 
 proc stop(w: Window) =
   mainQuit()
@@ -121,7 +118,7 @@ proc main =
     mainBoard = newWindow()
     boxMain = newBox(Orientation.vertical, 5)
   
-  mainBoard.title = "AnonSurf GUI"
+  mainBoard.title = "AnonSurf"
 
   # areaStatus(boxMain)
   areaAnonsurf(boxMain)

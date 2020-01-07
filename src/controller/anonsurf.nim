@@ -1,18 +1,18 @@
 import os
 import gintro / gtk
 
-proc anonsurfStart*(b: Button) =
-  discard execShellCmd("gksu service anondaemon start")
 
-proc anonsurfStop*(b: Button) =
-  discard execShellCmd("gksu service anondaemon stop")
+proc anonsurfControl*(b: Button) =
+  if b.label == "Enable":
+    discard execShellCmd("gksu service anondaemon start")
+  else:
+    discard execShellCmd("gksu service anondaemon stop")
 
-proc anonsurfRestart*(b: Button) =
-  discard execShellCmd("gksu service anondaemon restart")
 
 proc change*(b: Button) =
   # select node (must check)
   discard
+
 
 proc status*(b: Button) =
   # Check current tor service
