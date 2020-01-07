@@ -81,7 +81,7 @@ proc areaAnonsurf(boxMain: Box) =
     btnChangeID = newButton("Change ID")
   
   var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID)
-  discard timeoutAdd(5, refreshStatus, args)
+  discard timeoutAdd(20, refreshStatus, args)
 
   labelAnonsurf.setXalign(0.0)
   labelRun.setXalign(0.0)
@@ -120,7 +120,6 @@ proc main =
   
   mainBoard.title = "AnonSurf"
 
-  # areaStatus(boxMain)
   areaAnonsurf(boxMain)
   areaDNS(boxMain)
 
