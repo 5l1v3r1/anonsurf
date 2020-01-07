@@ -18,4 +18,4 @@ proc status*(b: Button) =
   # Check current tor service
   # TODO real time monitoring in gui
   # TODO use this as a "lock" for anonsurf
-  discard
+  discard execShellCmd("x-terminal-emulator nyx")

@@ -19,18 +19,19 @@ proc refreshStatus(args: Obj): bool =
     args.btnRun.label = "Disable"
 
     args.btnStatus.label = "Check Status"
-    args.btnStatus.setFocusOnClick(true)
+    args.btnStatus.setSensitive(true)
 
     args.btnChange.label = "Change Tor Node"
+    args.btnChange.setSensitive(true)
 
   else:
     args.btnRun.label = "Enable"
 
     args.btnStatus.label = "AnonSurf Off"
-    args.btnStatus.setFocusOnClick(false)
+    args.btnStatus.setSensitive(false)
 
     args.btnChange.label = "Not connected"
-    args.btnChange.setFocusOnClick(false)
+    args.btnChange.setSensitive(false)
   return SOURCE_CONTINUE
 
 proc areaDNS(boxMain: Box) =
