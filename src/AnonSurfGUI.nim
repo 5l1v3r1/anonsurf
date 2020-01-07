@@ -1,6 +1,5 @@
 import gintro / [gtk, glib, gobject]
 import os
-import utils
 import osproc
 import strutils
 
@@ -10,28 +9,67 @@ type
     btnStatus: Button
     btnChange: Button
 
+var serviceThread: system.Thread[tuple[command: string]]
+
+
+proc runThread(argv: tuple[command: string]) {.thread.} =
+  discard execShellCmd(argv.command)
+
+
+proc anonsurfControl(b: Button) =
+  if b.label == "Enable":
+    createThread(serviceThread, runThread, ("gksu service anondaemon start",))
+    # discard execShellCmd("gksu service anondaemon start")
+  else:
+    # b.label = "Enabling"
+    createThread(serviceThread, runThread, ("gksu service anondaemon stop",))
+    # discard execShellCmd("gksu service anondaemon stop")
+
+
+proc change(b: Button) =
+  # select node (must check)
+  discard
+
+
+proc status(b: Button) =
+  discard execShellCmd("x-terminal-emulator nyx")
+
+proc setDNS(b: Button) =
+  discard execShellCmd("gksu anonsurf dns")
+
+
 proc refreshStatus(args: Obj): bool =
   # TODO work with update ip label
   # TODO check DNS buttons
+  # TODO check if thread is running
   let output = execProcess("systemctl is-active anondaemon").replace("\n", "")
-  if output == "active":
-    # Settings for button anonsurf
-    args.btnRun.label = "Disable"
-
-    args.btnStatus.label = "Check Status"
-    args.btnStatus.setSensitive(true)
-
-    args.btnChange.label = "Change Tor Node"
-    args.btnChange.setSensitive(true)
-
-  else:
-    args.btnRun.label = "Enable"
-
-    args.btnStatus.label = "AnonSurf Off"
+  if serviceThread.running():
+    args.btnRun.label = "Switching"
+    args.btnRun.setSensitive(false)
     args.btnStatus.setSensitive(false)
-
-    args.btnChange.label = "Not connected"
     args.btnChange.setSensitive(false)
+    
+  else:
+    if output == "active":
+      # Settings for button anonsurf
+      args.btnRun.label = "Disable"
+      args.btnRun.setSensitive(true)
+
+      args.btnStatus.label = "Check Status"
+      args.btnStatus.setSensitive(true)
+
+      args.btnChange.label = "Change Tor Node"
+      args.btnChange.setSensitive(true)
+
+    else:
+      args.btnRun.label = "Enable"
+      args.btnRun.setSensitive(true)
+
+      args.btnStatus.label = "AnonSurf Off"
+      args.btnStatus.setSensitive(false)
+
+      args.btnChange.label = "Not connected"
+      args.btnChange.setSensitive(false)
   return SOURCE_CONTINUE
 
 proc areaDNS(boxMain: Box) =
@@ -46,12 +84,12 @@ proc areaDNS(boxMain: Box) =
     # OpenNic is already set. Disable it
     btnDNS.label = "Disable OpenNIC DNS" # Todo change to shorter name
     btnDNS.setTooltipText("You are using OpenNIC DNS service")
-    btnDNS.connect("clicked", utils.setDNS)
+    btnDNS.connect("clicked", setDNS)
   else:
     # OpenNic is not set. Enable it
     btnDNS.label = "Enable OpenNIC DNS"
     btnDNS.setTooltipText("You are not using OpenNIC DNS service")
-    btnDNS.connect("clicked", utils.setDNS)
+    btnDNS.connect("clicked", setDNS)
 
   labelDNS.setXalign(0.0)
   
@@ -89,9 +127,9 @@ proc areaAnonsurf(boxMain: Box) =
   labelStatus.setXalign(0.0)
   labelChange.setXalign(0.0)
 
-  btnRunAnon.connect("clicked", utils.anonsurfControl)
-  btnCheckStatus.connect("clicked", utils.status)
-  btnChangeID.connect("clicked", utils.change)
+  btnRunAnon.connect("clicked", anonsurfControl)
+  btnCheckStatus.connect("clicked", status)
+  btnChangeID.connect("clicked", change)
 
   
   boxRun.packStart(labelRun, false, true, 3)
