@@ -1,6 +1,6 @@
 import gintro / [gtk, glib, gobject]
 import os
-import controller / [dns, utils, anonsurf]
+import utils
 import osproc
 import strutils
 
@@ -46,12 +46,12 @@ proc areaDNS(boxMain: Box) =
     # OpenNic is already set. Disable it
     btnDNS.label = "Disable OpenNIC DNS" # Todo change to shorter name
     btnDNS.setTooltipText("You are using OpenNIC DNS service")
-    btnDNS.connect("clicked", dns.setDNS)
+    btnDNS.connect("clicked", utils.setDNS)
   else:
     # OpenNic is not set. Enable it
     btnDNS.label = "Enable OpenNIC DNS"
     btnDNS.setTooltipText("You are not using OpenNIC DNS service")
-    btnDNS.connect("clicked", dns.setDNS)
+    btnDNS.connect("clicked", utils.setDNS)
 
   labelDNS.setXalign(0.0)
   
@@ -89,9 +89,9 @@ proc areaAnonsurf(boxMain: Box) =
   labelStatus.setXalign(0.0)
   labelChange.setXalign(0.0)
 
-  btnRunAnon.connect("clicked", anonsurf.anonsurfControl)
-  btnCheckStatus.connect("clicked", anonsurf.status)
-  btnChangeID.connect("clicked", anonsurf.change)
+  btnRunAnon.connect("clicked", utils.anonsurfControl)
+  btnCheckStatus.connect("clicked", utils.status)
+  btnChangeID.connect("clicked", utils.change)
 
   
   boxRun.packStart(labelRun, false, true, 3)

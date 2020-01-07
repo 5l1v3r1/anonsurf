@@ -115,9 +115,9 @@ function stop {
 	/sbin/sysctl -w net.ipv6.conf.default.disable_ipv6=0
 
 	/usr/sbin/service tor stop
-	sleep 2
+	sleep 1
 	killall tor
-	sleep 6
+	sleep 1
 }
 
 
