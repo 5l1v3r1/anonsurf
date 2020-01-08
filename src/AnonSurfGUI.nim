@@ -8,6 +8,7 @@ type
     btnRun: Button
     btnStatus: Button
     btnChange: Button
+    btnOpenNICDNS: Button
 
 var serviceThread: system.Thread[tuple[command: string]]
 
@@ -42,12 +43,17 @@ proc refreshStatus(args: Obj): bool =
   # TODO work with update ip label
   # TODO check DNS buttons
   # TODO check if thread is running
-  let output = execProcess("systemctl is-active anondaemon").replace("\n", "")
+  let
+    output = execProcess("systemctl is-active anondaemon").replace("\n", "")
+    dnsLock = "/etc/anonsurf/opennic.lock"
+  
   if serviceThread.running():
     args.btnRun.label = "Switching"
+    args.btnOpenNICDNS.label = "Generating"
     args.btnRun.setSensitive(false)
     args.btnStatus.setSensitive(false)
     args.btnChange.setSensitive(false)
+    args.btnOpenNICDNS.setSensitive(false)
     
   else:
     if output == "active":
@@ -64,6 +70,10 @@ proc refreshStatus(args: Obj): bool =
       args.btnChange.setTooltipText("Change current Tor node")
       args.btnChange.setSensitive(true)
 
+      args.btnOpenNICDNS.label = "Tor DNS"
+      args.btnOpenNICDNS.setTooltipText("Using Tor DNS")
+      args.btnOpenNICDNS.setSensitive(false)
+
     else:
       args.btnRun.label = "Enable"
       args.btnRun.setTooltipText("Enable Anonsurf to hide your identify")
@@ -76,35 +86,21 @@ proc refreshStatus(args: Obj): bool =
       args.btnChange.label = "Not connected"
       args.btnChange.setTooltipText("You are not connecting to Tor network")
       args.btnChange.setSensitive(false)
+
+      args.btnOpenNICDNS.setSensitive(true)
+      if existsFile(dnsLock):
+        # OpenNic is already set. Disable it
+        args.btnOpenNICDNS.label = "Disable" # Todo change to shorter name
+        args.btnOpenNICDNS.setTooltipText("Start using OpenNIC DNS")
+      else:
+        # OpenNic is not set. Enable it
+        args.btnOpenNICDNS.label = "Enable"
+        args.btnOpenNICDNS.setTooltipText("Stop using OpenNIC DNS")
+
   return SOURCE_CONTINUE
 
-proc areaDNS(boxMain: Box) =
-  let
-    dnsLock = "/etc/anonsurf/opennic.lock"
-    boxDNS = newBox(Orientation.horizontal, 3)
-    labelDNS = newLabel("OpenNIC DNS")
-    btnDNS = newButton()
-  
-  # TODO when anonsurf is enabled, the lock file will be there but only 127.0.0.1
-  if existsFile(dnsLock):
-    # OpenNic is already set. Disable it
-    btnDNS.label = "Disable" # Todo change to shorter name
-    btnDNS.setTooltipText("Start using OpenNIC DNS")
-    btnDNS.connect("clicked", setDNS)
-  else:
-    # OpenNic is not set. Enable it
-    btnDNS.label = "Enable"
-    btnDNS.setTooltipText("Stop using OpenNIC DNS")
-    btnDNS.connect("clicked", setDNS)
 
-  labelDNS.setXalign(0.0)
-  
-  boxDNS.packStart(btnDNS, false, true, 3)
-  boxMain.packStart(labelDNS, false, true, 3)
-  boxMain.packStart(boxDNS, false, true, 3)
-
-
-proc areaAnonsurf(boxMain: Box) =
+proc createArea(boxMain: Box) =
   #[
     Generate area to control anonsurf with:
       Enable / disable anonsurf service button
@@ -124,10 +120,14 @@ proc areaAnonsurf(boxMain: Box) =
     btnRunAnon = newButton("Start AnonSurf")
     btnCheckStatus = newButton("Check Status")
     btnChangeID = newButton("Change ID")
+    boxDNS = newBox(Orientation.horizontal, 3)
+    labelDNS = newLabel("OpenNIC DNS")
+    btnDNS = newButton()
   
-  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID)
+  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnOpenNICDNS: btnDNS)
   discard timeoutAdd(20, refreshStatus, args)
 
+  labelDNS.setXalign(0.0)
   labelAnonsurf.setXalign(0.0)
   labelRun.setXalign(0.0)
   labelStatus.setXalign(0.0)
@@ -136,6 +136,7 @@ proc areaAnonsurf(boxMain: Box) =
   btnRunAnon.connect("clicked", anonsurfControl)
   btnCheckStatus.connect("clicked", status)
   btnChangeID.connect("clicked", change)
+  btnDNS.connect("clicked", setDNS)
 
   
   boxRun.packStart(labelRun, false, true, 3)
@@ -150,8 +151,14 @@ proc areaAnonsurf(boxMain: Box) =
   boxAnonsurf.packstart(boxRun, false, true, 3)
   boxAnonsurf.packstart(boxStatus, false, true, 3)
   boxAnonsurf.packstart(boxChange, false, true, 3)
+
+  boxDNS.packStart(btnDNS, false, true, 3)
+  
   boxMain.packStart(labelAnonsurf, false, true, 3)
   boxMain.packStart(boxAnonsurf, false, true, 3)
+
+  boxMain.packStart(labelDNS, false, true, 3)
+  boxMain.packStart(boxDNS, false, true, 3)
 
 
 proc stop(w: Window) =
@@ -165,8 +172,7 @@ proc main =
   
   mainBoard.title = "AnonSurf"
 
-  areaAnonsurf(boxMain)
-  areaDNS(boxMain)
+  createArea(boxMain)
 
   mainBoard.add(boxMain)
   mainBoard.setBorderWidth(3)
