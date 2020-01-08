@@ -8,7 +8,7 @@ type
     btnRun: Button
     btnStatus: Button
     btnChange: Button
-    btnOpenNICDNS: Button
+    btnSetDNS: Button
 
 var serviceThread: system.Thread[tuple[command: string]]
 
@@ -49,11 +49,11 @@ proc refreshStatus(args: Obj): bool =
   
   if serviceThread.running():
     args.btnRun.label = "Switching"
-    args.btnOpenNICDNS.label = "Generating"
+    args.btnSetDNS.label = "Generating"
     args.btnRun.setSensitive(false)
     args.btnStatus.setSensitive(false)
     args.btnChange.setSensitive(false)
-    args.btnOpenNICDNS.setSensitive(false)
+    args.btnSetDNS.setSensitive(false)
     
   else:
     if output == "active":
@@ -70,9 +70,9 @@ proc refreshStatus(args: Obj): bool =
       args.btnChange.setTooltipText("Change current Tor node")
       args.btnChange.setSensitive(true)
 
-      args.btnOpenNICDNS.label = "Tor DNS"
-      args.btnOpenNICDNS.setTooltipText("Using Tor DNS")
-      args.btnOpenNICDNS.setSensitive(false)
+      args.btnSetDNS.label = "Tor DNS"
+      args.btnSetDNS.setTooltipText("Using Tor DNS")
+      args.btnSetDNS.setSensitive(false)
 
     else:
       args.btnRun.label = "Enable"
@@ -87,15 +87,15 @@ proc refreshStatus(args: Obj): bool =
       args.btnChange.setTooltipText("You are not connecting to Tor network")
       args.btnChange.setSensitive(false)
 
-      args.btnOpenNICDNS.setSensitive(true)
+      args.btnSetDNS.setSensitive(true)
       if existsFile(dnsLock):
         # OpenNic is already set. Disable it
-        args.btnOpenNICDNS.label = "Disable" # Todo change to shorter name
-        args.btnOpenNICDNS.setTooltipText("Start using OpenNIC DNS")
+        args.btnSetDNS.label = "Disable" # Todo change to shorter name
+        args.btnSetDNS.setTooltipText("Start using OpenNIC DNS")
       else:
         # OpenNic is not set. Enable it
-        args.btnOpenNICDNS.label = "Enable"
-        args.btnOpenNICDNS.setTooltipText("Stop using OpenNIC DNS")
+        args.btnSetDNS.label = "Enable"
+        args.btnSetDNS.setTooltipText("Stop using OpenNIC DNS")
 
   return SOURCE_CONTINUE
 
@@ -124,7 +124,7 @@ proc createArea(boxMain: Box) =
     labelDNS = newLabel("OpenNIC DNS")
     btnDNS = newButton()
   
-  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnOpenNICDNS: btnDNS)
+  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnSetDNS: btnDNS)
   discard timeoutAdd(20, refreshStatus, args)
 
   labelDNS.setXalign(0.0)
