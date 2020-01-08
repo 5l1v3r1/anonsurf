@@ -1,7 +1,8 @@
-import gintro / [gtk, glib, gobject]
+import gintro / [gtk, glib, gobject, notify]
 import os
 import osproc
 import strutils
+import net
 
 type
   Obj = ref object
@@ -26,12 +27,40 @@ proc anonsurfControl(b: Button) =
 
 
 proc change(b: Button) =
-  # select node (must check)
-  discard
+  #[
+    Send change node command to Control port then restart tor service
+    Host: 127.0.0.1 | localhost
+    Port: 9051
+    Data:
+    """
+      authenticate "kuhNygbtfu76fFUbgv"
+      signal newnym
+      quit
+    """
+    URL: https://stackoverflow.com/a/33726166
+  ]#
+  let
+    sock_data = "authenticate \"kuhNygbtfu76fFUbgv\"\nsignal newnym\nquit"
+  var socket = newSocket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
+  socket.connect("127.0.0.1", Port(9051))
+
+  discard notify.init("Change Tor Node")
+
+  let noti = newNotification("Changed node succesfully")
+
+  if socket.trySend(sock_data):
+    createThread(serviceThread, runThread, ("gksu service tor restart",))
+  else:
+    discard noti.update("Change node failed")
+  socket.close()
+
+  serviceThread.joinThread()
+  discard noti.show()
 
 
 proc status(b: Button) =
   discard execShellCmd("x-terminal-emulator nyx")
+
 
 proc setDNS(b: Button) =
   discard execShellCmd("gksu anonsurf dns")
@@ -46,6 +75,7 @@ proc refreshStatus(args: Obj): bool =
   if serviceThread.running():
     args.btnRun.label = "Switching"
     args.btnSetDNS.label = "Generating"
+    args.btnChange.label = "Changing"
     args.btnRun.setSensitive(false)
     args.btnStatus.setSensitive(false)
     args.btnChange.setSensitive(false)
@@ -120,8 +150,6 @@ proc createArea(boxMain: Box) =
     labelDNS = newLabel("OpenNIC DNS")
     btnDNS = newButton()
   
-  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnSetDNS: btnDNS)
-  discard timeoutAdd(20, refreshStatus, args)
 
   labelDNS.setXalign(0.0)
   labelRun.setXalign(0.0)
@@ -154,6 +182,9 @@ proc createArea(boxMain: Box) =
 
   boxMain.packStart(labelDNS, false, true, 3)
   boxMain.packStart(boxDNS, false, true, 3)
+
+  var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnSetDNS: btnDNS)
+  discard timeoutAdd(20, refreshStatus, args)
 
 
 proc stop(w: Window) =
