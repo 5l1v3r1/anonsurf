@@ -22,7 +22,6 @@ proc anonsurfControl(b: Button) =
   if b.label == "Enable":
     createThread(serviceThread, runThread, ("gksu anonsurf start",))
   else:
-    # b.label = "Enabling"
     createThread(serviceThread, runThread, ("gksu anonsurf stop",))
 
 
@@ -49,12 +48,11 @@ proc change(b: Button) =
   let noti = newNotification("Changed node succesfully")
 
   if socket.trySend(sock_data):
-    createThread(serviceThread, runThread, ("gksu service tor restart",))
+    discard execShellCmd("gksu service tor restart")
   else:
     discard noti.update("Change node failed")
   socket.close()
 
-  serviceThread.joinThread()
   discard noti.show()
 
 
