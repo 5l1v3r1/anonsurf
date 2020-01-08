@@ -182,7 +182,7 @@ proc createArea(boxMain: Box) =
   boxMain.packStart(boxDNS, false, true, 3)
 
   var args = Obj(btnRun: btnRunAnon, btnStatus: btnCheckStatus, btnChange: btnChangeID, btnSetDNS: btnDNS)
-  discard timeoutAdd(20, refreshStatus, args)
+  discard timeoutAdd(50, refreshStatus, args)
 
 
 proc stop(w: Window) =
