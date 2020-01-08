@@ -19,12 +19,10 @@ proc runThread(argv: tuple[command: string]) {.thread.} =
 
 proc anonsurfControl(b: Button) =
   if b.label == "Enable":
-    createThread(serviceThread, runThread, ("gksu service anondaemon start",))
-    # discard execShellCmd("gksu service anondaemon start")
+    createThread(serviceThread, runThread, ("gksu anonsurf start",))
   else:
     # b.label = "Enabling"
-    createThread(serviceThread, runThread, ("gksu service anondaemon stop",))
-    # discard execShellCmd("gksu service anondaemon stop")
+    createThread(serviceThread, runThread, ("gksu anonsurf stop",))
 
 
 proc change(b: Button) =
@@ -41,8 +39,6 @@ proc setDNS(b: Button) =
 
 proc refreshStatus(args: Obj): bool =
   # TODO work with update ip label
-  # TODO check DNS buttons
-  # TODO check if thread is running
   let
     output = execProcess("systemctl is-active anondaemon").replace("\n", "")
     dnsLock = "/etc/anonsurf/opennic.lock"
@@ -113,14 +109,14 @@ proc createArea(boxMain: Box) =
     boxRun = newBox(Orientation.vertical, 3) # The box to generate Run button and its label
     boxStatus = newBox(Orientation.vertical, 3) # The box to generate Check status button and its label
     boxChange = newBox(Orientation.vertical, 3) # The box to generate Change current node button and its label
-    labelRun = newLabel("Service") # TODO shorter name
+    labelRun = newLabel("Service")
     labelStatus = newLabel("Status")
     labelChange = newLabel("Change Node")
     labelAnonsurf = newLabel("AnonSurf")
     btnRunAnon = newButton("Start AnonSurf")
     btnCheckStatus = newButton("Check Status")
     btnChangeID = newButton("Change ID")
-    boxDNS = newBox(Orientation.horizontal, 3)
+    boxDNS = newBox(Orientation.horizontal, 3) # Create a box for DNS area
     labelDNS = newLabel("OpenNIC DNS")
     btnDNS = newButton()
   
@@ -128,7 +124,6 @@ proc createArea(boxMain: Box) =
   discard timeoutAdd(20, refreshStatus, args)
 
   labelDNS.setXalign(0.0)
-  labelAnonsurf.setXalign(0.0)
   labelRun.setXalign(0.0)
   labelStatus.setXalign(0.0)
   labelChange.setXalign(0.0)
