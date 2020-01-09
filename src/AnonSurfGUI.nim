@@ -48,9 +48,13 @@ proc change(b: Button) =
   let noti = newNotification("Changed node succesfully")
 
   if socket.trySend(sock_data):
-    discard execShellCmd("gksu service tor restart")
+    let recvData = socket.recvLine()
+    if recvData == "250 OK":
+      discard execShellCmd("gksu service tor restart")
+    else:
+      discard noti.update("Failed to change new identify")
   else:
-    discard noti.update("Change node failed")
+    discard noti.update("Can't connect to Tor control port")
   socket.close()
 
   discard noti.show()
