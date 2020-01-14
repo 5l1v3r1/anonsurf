@@ -27,3 +27,5 @@ install:
 	ln -s /usr/bin/anonsurf $(DESTDIR)/usr/bin/anon
 	chown root:root $(DESTDIR)/etc/anonsurf -R
 	chmod 644 $(DESTDIR)/etc/anonsurf -R
+
+	systemctl daemon-reload
