@@ -8,14 +8,14 @@ AnonSurf [start | stop | restart | changeid | status | myip | dns]
 Setup a Tor proxy and route your all traffic through Tor
 
 * Functions:
-  * Start / stop / restart tor
+  * Start / stop / restart AnonSurf
   * Check current Tor status by using Nyx
   * Change your ID by restart Tor nodes
   * Check your public IP
   * Change your DNS settings to OpenNIC DNS service
 
 * start:
-  * Kill dangerous applications (chrome dropbox iceweasel skype thunderbird firefox,... ) and clean caches [Ask user action]
+  * Kill dangerous applications (chrome dropbox iceweasel skype thunderbird firefox,...) and clean caches [Ask user's action]
   * Kill nscd, resolvconf, dnsmasq service
   * Create a system daemon to start Tor proxy gate
     * Start Tor with AnonSurf settings
