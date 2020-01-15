@@ -8,6 +8,7 @@ Files:
   torrc
   onion.pac
   debian/*
+  launchers/*
 Copyright:
   2020, Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
   2020, Lisetta "Sheireen" Ferrero <sheireen@parrotsec.org>
@@ -17,13 +18,20 @@ License: GPL-3.0+
 Files:
   debian/changelog
   debian/anonsurf.1
-  debian/anonsurf.manpages
   anonsurf/anondaemon
   anonsurf/anonsurf
   anonsurf/anondaemon.service
   AnonSurfGUI.nimble
+  launcher/anon-gui.desktop
   src/*
-Copyright: 2020 dmknght <dmknght@parrotsec.org>
+Copyright: 2020, Nong Hoang "DmKnght" Tu <dmknght@parrotsec.org>
+License: GPL-3.0+
+
+Files:
+  debian/anonsurf.manpages
+Copyright:
+  2020, Nong Hoang "DmKnght" Tu <dmknght@parrotsec.org>
+  2020, John Meagher <jme0719a@harford.edu>
 License: GPL-3.0+
 
 License: GPL-3.0+
