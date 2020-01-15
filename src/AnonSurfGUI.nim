@@ -25,6 +25,17 @@ proc anonsurfControl(b: Button) =
     createThread(serviceThread, runThread, ("gksu anonsurf stop",))
 
 
+proc actionCancel(b: Button, d: Dialog) =
+  d.destroy()
+    
+
+proc bootAction(b: Button) =
+  if b.label == "Enable":
+    discard execShellCmd("gksu systemctl enable anondaemon")
+  else:
+    discard execShellCmd("gksu systemctl disable anondaemon")
+
+
 proc change(b: Button) =
   #[
     Send change node command to Control port then restart tor service
@@ -69,6 +80,36 @@ proc status(b: Button) =
 
 proc setDNS(b: Button) =
   discard execShellCmd("gksu anonsurf dns")
+
+
+proc setStartup(b: Button) =
+  let
+    bootDialog = newDialog()
+    bootArea = bootDialog.getContentArea()
+    labelStatus = newLabel("Boot status")
+    btnArea = newBox(Orientation.horizontal, 3)
+    btnClose = newButton("Close")
+    btnAction = newButton("Enable AnonSurf at boot")
+    currentStatus = execProcess("systemctl list-unit-files | grep anondaemon | awk '{print $2}'")
+
+  labelStatus.setXalign(0.0)
+
+  if currentStatus == "disabled":
+    labelStatus.label = "AnonSurf startup is disabled"
+    btnAction.setLabel("Enable")
+  else:
+    labelStatus.label = "AnonSurf startup is enabled"
+    btnAction.setLabel("Disable")
+  
+  btnAction.connect("clicked", bootAction)
+  btnClose.connect("clicked", actionCancel, bootDialog)
+
+  btnArea.packStart(btnAction, false, true, 3)
+  btnArea.packStart(btnClose, false, true, 3)
+  bootArea.packStart(labelStatus, false, true, 3)
+  bootArea.packStart(btnArea, false, true, 3)
+
+  bootDialog.showAll
 
 
 proc refreshStatus(args: Obj): bool =
@@ -151,6 +192,7 @@ proc createArea(boxMain: Box) =
     btnRunAnon = newButton("Start AnonSurf")
     btnCheckStatus = newButton("Check Status")
     btnChangeID = newButton("Change ID")
+    btnAtBoot = newButton("System Startup")
     boxDNS = newBox(Orientation.horizontal, 3) # Create a box for DNS area
     labelDNS = newLabel("OpenNIC DNS")
     btnDNS = newButton()
@@ -184,6 +226,9 @@ proc createArea(boxMain: Box) =
   
   boxMain.packStart(labelAnonsurf, false, true, 3)
   boxMain.packStart(boxAnonsurf, false, true, 3)
+
+  btnAtBoot.connect("clicked", setStartup)
+  boxMain.packStart(btnAtBoot, false,  true, 3)
 
   boxMain.packStart(labelDNS, false, true, 3)
   boxMain.packStart(boxDNS, false, true, 3)
