@@ -29,4 +29,3 @@ install:
 	chown root:root $(DESTDIR)/etc/anonsurf -R
 	chmod 644 $(DESTDIR)/etc/anonsurf -R
 
-	systemctl daemon-reload
