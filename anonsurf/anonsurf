@@ -15,6 +15,9 @@
 # Lisetta 'Sheireen' Ferrero <sheireen@autistiche.org>
 # Francesco 'Mibofra' Bonanno <mibofra@parrotsec.org>
 #
+# Maintainer:
+# Nong Hoang 'DmKnght' Tu <dmknght@parrotsec.org>
+#
 # Extended:
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
@@ -37,7 +40,6 @@ export BLUE='\033[1;94m'
 export GREEN='\033[1;92m'
 export RED='\033[1;91m'
 export RESETCOLOR='\033[1;00m'
-
 
 
 function notify {
@@ -70,6 +72,7 @@ function ip {
 	notify "My IP is:\n\n$MYIP"
 }
 
+
 function checkuid {
 	# Make sure only root can run this script
 	ME=$(whoami | tr [:lower:] [:upper:])
@@ -78,6 +81,7 @@ function checkuid {
 		exit 1
 	fi
 }
+
 
 function start {
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
@@ -119,6 +123,7 @@ function status {
 	nyx
 }
 
+
 function dnsstart {
     echo "Configuring OpenNIC DNS service"
     notify "Configuring OpenNIC DNS service"
@@ -130,6 +135,7 @@ function dnsstart {
     echo "done"
     notify "done"
 }
+
 
 function dnsstop {
     echo "Deconfiguring OpenNIC DNS service"
@@ -143,6 +149,7 @@ function dnsstop {
     notify "done"
 }
 
+
 function dns {
     if [ -f /etc/anonsurf/opennic.lock ]; then
         dnsstop
@@ -150,7 +157,6 @@ function dns {
         dnsstart
     fi
 }
-
 
 
 case "$1" in
