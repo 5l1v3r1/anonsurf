@@ -164,7 +164,7 @@ case "$1" in
 	# Only start if anondaemon is not running
 	# TODO try to run if the service status is failed?
 		checkuid
-		if [ "$(systemctl is-active anondaemon)" = "inactive" ]; then
+		if [ "$(service anondaemon status | grep Active | awk '{print $2}')" = "inactive" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			start
 		else
@@ -174,7 +174,7 @@ case "$1" in
 	stop)
 	# Only stop if the anondaemon is running
 		checkuid
-		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+		if [ "$(service anondaemon status | grep Active | awk '{print $2}')" = "active" ]; then
 			zenity --question --text="Do you want anonsurf to kill dangerous applications and clean some application caches?" --width 400 && init
 			stop
 		else
@@ -185,7 +185,7 @@ case "$1" in
 		change
 	;;
 	status)
-		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+		if [ "$(service anondaemon status | grep Active | awk '{print $2}')" = "active" ]; then
 			status
 		else
 			echo -e "\n$GREEN[$RED!$GREEN] $RED Anonsurf is not running!$RESETCOLOR\n"
@@ -200,7 +200,7 @@ case "$1" in
 	restart)
 		# Restart if the daemon is running onnly
 		checkuid
-		if [ "$(systemctl is-active anondaemon)" = "active" ]; then
+		if [ "$(service anondaemon status | grep Active | awk '{print $2}')" = "active" ]; then
 			$0 stop
 			sleep 1
 			$0 start
