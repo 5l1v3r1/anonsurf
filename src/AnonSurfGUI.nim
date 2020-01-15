@@ -29,11 +29,19 @@ proc actionCancel(b: Button, d: Dialog) =
   d.destroy()
     
 
-proc bootAction(b: Button) =
+proc bootAction(b: Button, l: Label) =
   if b.label == "Enable":
     discard execShellCmd("gksu systemctl enable anondaemon")
   else:
     discard execShellCmd("gksu systemctl disable anondaemon")
+    
+  let currentStatus = execProcess("systemctl list-unit-files | grep anondaemon | awk '{print $2}'")
+  if currentStatus == "disabled\n":
+    l.label = "AnonSurf startup is disabled"
+    b.setLabel("Enable")
+  else:
+    l.label = "AnonSurf startup is enabled"
+    b.setLabel("Disable")
 
 
 proc change(b: Button) =
@@ -94,14 +102,14 @@ proc setStartup(b: Button) =
 
   labelStatus.setXalign(0.0)
 
-  if currentStatus == "disabled":
+  if currentStatus == "disabled\n":
     labelStatus.label = "AnonSurf startup is disabled"
     btnAction.setLabel("Enable")
   else:
-    labelStatus.label = "AnonSurf startup is enabled"
+    labelStatus.label = "AnonSurf startup is enabled\n"
     btnAction.setLabel("Disable")
   
-  btnAction.connect("clicked", bootAction)
+  btnAction.connect("clicked", bootAction, labelStatus)
   btnClose.connect("clicked", actionCancel, bootDialog)
 
   btnArea.packStart(btnAction, false, true, 3)
