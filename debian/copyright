@@ -3,12 +3,26 @@ Upstream-Name: AnonSurf
 Upstream-Contact: Nong Hoang "DmKnght" Tu dmknght@parrotsec.org
 Source: https://nest.parrot.sh/packages/tools/anonsurf
 
-Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Files:
+  resolv.conf.opennic
+  torrc
+  onion.pac
+  debian/*
+Copyright:
+  2020, Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+  2020, Lisetta "Sheireen" Ferrero <sheireen@parrotsec.org>
+  2020, Francesco "Mibofra" Bonanno <mibofra@parrotsec.org>
 License: GPL-3.0+
 
-Files: debian/*
+Files:
+  debian/changelog
+  debian/anonsurf.1
+  debian/anonsurf.manpages
+  anonsurf/anondaemon
+  anonsurf/anonsurf
+  anonsurf/anondaemon.service
+  AnonSurfGUI.nimble
+  src/*
 Copyright: 2020 dmknght <dmknght@parrotsec.org>
 License: GPL-3.0+
 
