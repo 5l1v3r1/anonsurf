@@ -37,10 +37,10 @@ proc bootAction(b: Button, l: Label) =
     
   let currentStatus = execProcess("systemctl list-unit-files | grep anondaemon | awk '{print $2}'")
   if currentStatus == "disabled\n":
-    l.label = "AnonSurf startup is disabled"
+    l.label = "AnonSurf on boot is inactived"
     b.setLabel("Enable")
   else:
-    l.label = "AnonSurf startup is enabled"
+    l.label = "AnonSurf on boot is actived"
     b.setLabel("Disable")
 
 
@@ -103,10 +103,10 @@ proc setStartup(b: Button) =
   labelStatus.setXalign(0.0)
 
   if currentStatus == "disabled\n":
-    labelStatus.label = "AnonSurf startup is disabled"
+    labelStatus.label = "AnonSurf on boot is inactived"
     btnAction.setLabel("Enable")
   else:
-    labelStatus.label = "AnonSurf startup is enabled\n"
+    labelStatus.label = "AnonSurf on boot is actived\n"
     btnAction.setLabel("Disable")
   
   btnAction.connect("clicked", bootAction, labelStatus)
@@ -254,7 +254,7 @@ proc main =
     mainBoard = newWindow()
     boxMain = newBox(Orientation.vertical, 3)
   
-  mainBoard.title = "AnonSurf"
+  mainBoard.title = "AnonSurf GUI"
 
   createArea(boxMain)
 
