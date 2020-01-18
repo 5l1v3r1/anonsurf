@@ -86,7 +86,7 @@ function checkuid {
 function start {
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
 
-	service anondaemon start
+	/usr/sbin/service anondaemon start
 
 	echo -e "$GREEN *$BLUE All traffic was redirected throught Tor\n"
 	echo -e "$GREEN[$BLUE i$GREEN ]$BLUE You are under AnonSurf tunnel$RESETCOLOR\n"
@@ -100,7 +100,7 @@ function start {
 function stop {
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
 
-	service anondaemon stop
+	/usr/sbin/service anondaemon stop
 
 	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
 	notify "Global Anonymous Proxy Closed - Stop dancing :("
@@ -130,7 +130,7 @@ function disable-boot {
 
 function change {
 	echo -e "authenticate \"kuhNygbtfu76fFUbgv\"\nsignal newnym\nquit" | nc localhost -q 1 9051
-	service tor restart
+	/usr/sbin/service tor restart
 	sleep 1
 	echo -e " $GREEN*$BLUE Tor daemon reloaded and forced to change nodes\n"
 	notify "Identity changed - let's dance again!"
@@ -144,28 +144,28 @@ function status {
 
 
 function dnsstart {
-    echo "Configuring OpenNIC DNS service"
-    notify "Configuring OpenNIC DNS service"
-    rm /etc/resolv.conf
-    cat /etc/anonsurf/resolv.conf.opennic > /etc/resolvconf/resolv.conf.d/tail
-    cat /etc/anonsurf/resolv.conf.opennic > /etc/resolv.conf
-    /usr/sbin/service resolvconf restart
-    touch /etc/anonsurf/opennic.lock
-    echo "done"
-    notify "done"
+	echo "Configuring OpenNIC DNS service"
+	notify "Configuring OpenNIC DNS service"
+	rm /etc/resolv.conf
+	cat /etc/anonsurf/resolv.conf.opennic > /etc/resolvconf/resolv.conf.d/tail
+	cat /etc/anonsurf/resolv.conf.opennic > /etc/resolv.conf
+	/usr/sbin/service resolvconf restart
+	touch /etc/anonsurf/opennic.lock
+	echo "done"
+	notify "done"
 }
 
 
 function dnsstop {
-    echo "Deconfiguring OpenNIC DNS service"
-    notify "Deconfiguring OpenNIC DNS service"
-    rm /etc/resolv.conf
-    ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
-    echo > /etc/resolvconf/resolv.conf.d/tail
-    /usr/sbin/service resolvconf restart
-    rm /etc/anonsurf/opennic.lock
-    echo "done"
-    notify "done"
+	echo "Deconfiguring OpenNIC DNS service"
+	notify "Deconfiguring OpenNIC DNS service"
+	rm /etc/resolv.conf
+	ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
+	echo > /etc/resolvconf/resolv.conf.d/tail
+	/usr/sbin/service resolvconf restart
+	rm /etc/anonsurf/opennic.lock
+	echo "done"
+	notify "done"
 }
 
 
