@@ -81,9 +81,11 @@ proc change(b: Button) =
 
 proc status(b: Button) =
   if getEnv("XDG_CURRENT_DESKTOP") == "MATE":
-    discard execShellCmd("mate-terminal -e nyx")
+    # discard execShellCmd("mate-terminal -e nyx")
+    createThread(serviceThread, runThread, ("mate-terminal -e nyx",))
   else:
-    discard execShellCmd("x-terminal-emulator nyx")
+    # discard execShellCmd("x-terminal-emulator nyx")
+    createThread(serviceThread, runThread, ("x-terminal-emulator nyx",))
 
 
 proc setDNS(b: Button) =
