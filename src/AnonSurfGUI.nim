@@ -101,6 +101,7 @@ proc setStartup(b: Button) =
     currentStatus = execProcess("systemctl list-unit-files | grep anondaemon | awk '{print $2}'")
 
   labelStatus.setXalign(0.0)
+  bootDialog.setTitle("System Startup")
 
   if currentStatus == "disabled\n":
     labelStatus.label = "AnonSurf on boot is inactived"
