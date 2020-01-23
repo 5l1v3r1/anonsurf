@@ -79,7 +79,7 @@ function enableService {
 
 
 function start {
-	service tor start
+	/usr/sbin/service tor start
 	sleep 3
 
 	if ! [ -f /etc/network/iptables.rules ]; then
