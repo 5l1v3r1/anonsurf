@@ -1,3 +1,11 @@
+anonsurf (2.11.2+parrot0) testing; urgency=medium
+
+  * Status check now use native vte instead of system term
+  * Bugs fix for nyx delay (tor service problem)
+  * Add anonymous.png icon, fix icon missing when switch theme
+
+ -- dmknght <dmknght@parrotsec.org>  Fri, 24 Jan 2020 20:28:18 +0700
+
 anonsurf (2.11+parrot1) testing; urgency=medium
 
   * Add enable / disable at boot options
