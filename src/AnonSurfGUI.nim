@@ -1,4 +1,4 @@
-import gintro / [gtk, glib, gobject, notify]
+import gintro / [gtk, glib, gobject, notify, vte]
 import os
 import osproc
 import strutils
@@ -80,12 +80,28 @@ proc change(b: Button) =
 
 
 proc status(b: Button) =
-  if getEnv("XDG_CURRENT_DESKTOP") == "MATE":
-    # discard execShellCmd("mate-terminal -e nyx")
-    createThread(serviceThread, runThread, ("mate-terminal -e nyx",))
-  else:
-    # discard execShellCmd("x-terminal-emulator nyx")
-    createThread(serviceThread, runThread, ("x-terminal-emulator nyx",))
+  let
+    statusDialog = newDialog()
+    statusArea = statusDialog.getContentArea()
+    nyxTerm = newTerminal()
+
+  nyxTerm.spawnAsync(
+    {noLastlog}, # pty flags
+    nil, # working directory
+    ["/usr/bin/nyx"], # args
+    [], # envv
+    {leaveDescriptorsOpen}, # spawn flag
+    nil, # Child setup
+    nil, # child setup data
+    nil, # chlid setup data destroy
+    -1, # timeout
+    nil, # cancellabel
+    nil, # callback
+    nil, # pointer
+  )
+
+  statusArea.packStart(nyxTerm, false, true, 3)
+  statusDialog.showAll
 
 
 proc setDNS(b: Button) =
