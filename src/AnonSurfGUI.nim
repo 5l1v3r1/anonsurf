@@ -27,14 +27,14 @@ proc anonsurfControl(b: Button) =
 
 proc actionCancel(b: Button, d: Dialog) =
   d.destroy()
-    
+
 
 proc bootAction(b: Button, l: Label) =
   if b.label == "Enable":
     discard execShellCmd("gksu systemctl enable anondaemon")
   else:
     discard execShellCmd("gksu systemctl disable anondaemon")
-    
+  
   let currentStatus = execProcess("systemctl list-unit-files | grep anondaemon | awk '{print $2}'")
   if currentStatus == "disabled\n":
     l.label = "AnonSurf on boot is inactived"
