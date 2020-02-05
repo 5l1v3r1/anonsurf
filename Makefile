@@ -11,7 +11,6 @@ install:
 	mkdir -p $(DESTDIR)/usr/share/applications/
 	mkdir -p $(DESTDIR)/usr/share/parrot-menu/applications/
 	mkdir -p $(DESTDIR)/lib/systemd/system/
-	mkdir -p $(DESTDIR)/usr/share/icons/
 	cp onion.pac $(DESTDIR)/etc/anonsurf/onion.pac
 	ln -s /etc/anonsurf/onion.pac $(DESTDIR)/etc/tor/onion.pac
 	cp torrc $(DESTDIR)/etc/anonsurf/torrc
@@ -22,7 +21,6 @@ install:
 	cp anonsurf/anonservice $(DESTDIR)/etc/init.d/
 	cp anonsurf/anonsurf $(DESTDIR)/usr/bin/
 	cp resolv.conf.opennic $(DESTDIR)/etc/anonsurf/resolv.conf.opennic
-	cp icons/anonsurf.png $(DESTDIR)/usr/share/icons/
 
 	cp -rf launchers/* $(DESTDIR)/usr/share/applications/
 	chown root:root $(DESTDIR)/usr/bin/anonsurf
